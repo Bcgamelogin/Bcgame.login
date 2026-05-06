@@ -1,0 +1,256 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+/* Style for the logo at the top left corner */
+.logo {
+    position: fixed;
+    top: 10px; /* Adjust the distance from the top */
+    left: 10px; /* Adjust the distance from the left */
+    width: 140px; /* Adjust the size of the logo */
+    height: auto; /* Maintain the aspect ratio of the logo */
+    z-index: 1000; /* Make sure it's above other content */
+  }
+  
+body {
+    background-color:  #222222;
+    color: #fff;
+    font-size: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Spread content to cover the viewport */
+    align-items: center;
+    min-height: 100%;
+    width: 100%;
+    padding: 0 0 20px 0; /* Add a bottom margin for spacing */
+    
+}
+
+/* Container */
+.container {
+    width: 100%;
+    margin: 0;
+   
+    height: 100%;
+    padding: 0;
+}
+
+/* Header Section */
+.header {
+    background: solid #a64141;
+    position: relative;
+    margin-top: -50px;
+    width: 100%;
+    height: 100%; /* Height adjusted for better visibility */
+    overflow: hidden; /* Ensure no overflow */
+}
+
+.header-bg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensure the image scales proportionally */
+    object-position: top; /* Align the image to start from the top */
+}
+
+.header-content {
+    position: absolute;
+    padding: px;
+    bottom: 0;
+    color: #222222;
+    left: 0;
+    right: 0;
+    padding-left: 20px; 
+    text-align: left;
+    background: linear-gradient(to bottom, #33333302, #222222, #222222);
+    /* Gradient with top (#0f0f0f78), middle (#5b4646), and bottom (#1c1c1c) */
+    
+}
+
+
+.header-content h1 {
+    font-size: 17px;
+   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: bold;
+    color: #fff;
+}
+
+/* Form Section */
+.form-section {
+    padding: 20px;
+    background-color: #222222;
+    border-top:  #c21717;
+    width: 100%; /* Full width */
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group input {
+    width: 100%;
+    height: 45px;
+    padding: 12px 15px;
+    font-size: 16px;
+    font: bold;
+    font-style: inherit;
+    font-weight: 550;
+    background-color: #1c1d1b;
+    border: 1px solid #3f4b4980;
+    border-radius: 9px;
+    color: #fff;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #39b54a;
+}
+
+.forgot-password {
+    display: block;
+    margin: 10px 0;
+   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: bold;
+    color: #ccc;
+    text-align: right;
+    text-decoration: none;
+}
+.passkey-button img {
+    width: 15px;
+    color: #33cc66;
+    height: 15px;
+} 
+.passkey-button {
+    background-color: #242323; /* Remove transparency */
+    border: 0.2px solid #3d3c3c; /* Single white border */
+    width: 100%;
+    height: 35px;
+    border-radius: 6px; /* Single radius */
+    padding: 10px 40px;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+
+.btn-signin {
+    width: 100%;
+    height: 47px;
+    padding: 9px 15px;
+    background: linear-gradient(90deg, #5ee470, #39ee75);
+    border: none;
+    border-radius: 9px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: bold;
+    color: #000000;
+    font-size: 17px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-signin:hover {
+    background: linear-gradient(90deg, #33cc66, #5cb539);
+}
+.icon-button {
+    background-color: #303030ea;
+    border: 1px solid #ffffff; /* Single border */
+    border-radius: 15px;
+    padding: 0; /* Remove additional padding */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+}
+
+.icon-button img {
+    width: 18px;
+    height: 11px;
+}
+
+.create-account {
+    padding: 15px;
+    font: bold;
+    font-weight: 700;
+    font-size: large;
+    font-size: 14px;
+}
+
+.create-account a {
+    color: #39b54a;
+    font-weight: 600;
+    text-decoration: none;
+    
+}
+
+
+  .line-text {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: large;
+    
+    display: flex;
+    align-items: center;
+    text-align: center;
+    font-size: 19px;
+  }
+
+  .line-text::before,
+  .line-text::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #343232; /* Adjust color and thickness */
+    margin: 0 10px; /* Space around the text */
+  }
+
+
+/* Social Login Section */
+.social-login {
+    padding:10px;
+    text-align: center;
+    width: 100%;
+}
+
+.social-login p {
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #aaa;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.social-icons button {
+    background: #252525;
+    border: none;
+    border-radius: 20%; /* Make the buttons round */
+    width: 35px; /* Increased width */
+    height: 35px; /* Increased height */
+    display: flex;
+    border: 1px solid #595959; /* Single border */
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.social-icons button:hover {
+    background: #9faaa0;
+}
+
+.social-icons img {
+    width: 35px;
+    height: 35px;
+    
+}

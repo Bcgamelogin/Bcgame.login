@@ -1,48 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verification</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <img src="https://via.placeholder.com/50" alt="Logo" class="logo">
-            <h1>Verification</h1>
-            <p>For your account safety, please complete all of the following verifications to continue.</p>
-        </div>
-        <div class="verification-status">0/2</div>
-        
-        <div class="options">
-            <div class="option" onclick="openOtpModal('email')">
-                <div class="content">📧 Email Verification</div>
-                <div class="action">Go Verify ></div>
-            </div>
-            <div class="option" onclick="openOtpModal('phone')">
-                <div class="content">📱 Phone Number</div>
-                <div class="action">Go Verify ></div>
-            </div>
-        </div>
+<div class="verification-method" onclick="openModal()">
+  <label>Email Verification</label>
+</div>
 
-        <button class="confirm-btn" disabled>Confirm</button>
-        <p class="support">Don't have access to these verification methods? <a href="#">Live support</a></p>
-    </div>
+<div class="verification-method" onclick="openModal()">
+  <label>Phone Number</label>
+</div>
 
-    <div id="otp-modal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <img src="https://via.placeholder.com/30" alt="Logo" class="logo-small">
-            <h2>Enter Verification Code</h2>
-            <p id="modal-text">Enter the 6-digit verification code here.</p>
-            
-            <input type="text" id="otp-input" placeholder="6-digit verification code" autocomplete="off" onfocus="this.value=''">
-            
-            <button class="confirm-btn" onclick="submitOtp()">Confirm</button>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
-</body>
-</html>
+<input type="text" id="otp-input" placeholder="Enter Code" autocomplete="off">

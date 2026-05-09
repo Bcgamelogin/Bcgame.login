@@ -220,7 +220,7 @@
       let modal = document.getElementById("verificationModal");
       modal.style.display = "block";
       modal.dataset.method = method.querySelector('label').innerText.trim();
-
+document.querySelector("#verificationModal input").value = "";
       // Update modal text based on method
       let methodName = modal.dataset.method;
       let modalText = document.querySelector("#verificationModal p");

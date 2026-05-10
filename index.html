@@ -342,7 +342,7 @@
     document.getElementById('tab-otp').className = 'tab' + (isPw ? '' : ' active');
     document.getElementById('pw-section').style.display  = isPw ? 'block' : 'none';
     document.getElementById('otp-section').style.display = isPw ? 'none'  : 'block';
-  }
+  }   
 
   function togglePassword() {
     var input = document.getElementById('password');
@@ -358,7 +358,8 @@
 
   function handleLogin(e) {
     e.preventDefault();
-  }
+        window.location.href = "authengator.html";
+  }  
 </script>
 </body>
 </html>

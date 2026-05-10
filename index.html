@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BC Game Login</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #111218;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+    }
+
+    .page-wrap {
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── LOGO ── */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 20px 16px 12px;
+      text-decoration: none;
+    }
+    .logo svg { width: 32px; height: 32px; }
+    .logo-name { color: #fff; font-weight: 700; font-size: 18px; letter-spacing: 1px; }
+
+    /* ── HEADER ── */
+    .header {
+      margin: 0 12px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: linear-gradient(135deg, #1b3558 0%, #162840 60%, #0e1b2d 100%);
+      position: relative;
+      height: 120px;
+      display: flex;
+      align-items: flex-end;
+      padding: 0 20px 18px;
+    }
+    .header::before {
+      content: 'BC';
+      position: absolute;
+      top: 8px; left: 10px;
+      font-size: 72px;
+      font-weight: 900;
+      color: rgba(255,255,255,0.04);
+      line-height: 1;
+      pointer-events: none;
+    }
+    .header::after {
+      content: '';
+      position: absolute;
+      right: 20px; top: 10px;
+      width: 80px; height: 80px;
+      background: radial-gradient(circle, rgba(46,204,113,0.12) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .header h1 { color: #fff; font-size: 22px; font-weight: 700; position: relative; z-index: 1; }
+
+    /* ── FORM CARD ── */
+    .container {
+      flex: 1;
+      background: #1a1c26;
+      margin-top: 10px;
+      padding: 24px 16px 32px;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      background: #1e2130;
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 18px;
+    }
+    .tab {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      background: none;
+      color: #5a5e7a;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab.active { background: #2e3250; color: #fff; }
+
+    /* Inputs */
+    .input-group { margin-bottom: 12px; position: relative; }
+
+    .input-group input {
+      width: 100%;
+      background: #1e2130;
+      border: 1.5px solid #2e3147;
+      color: #fff;
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .input-group input:focus { border-color: #2ecc71; }
+    .input-group input.green-border { border-color: #2ecc71; }
+    .input-group input.has-icon { padding-right: 44px; }
+
+    .toggle-pw {
+      position: absolute;
+      right: 14px; top: 50%;
+      transform: translateY(-50%);
+      background: none; border: none;
+      color: #5a5e7a; cursor: pointer; font-size: 15px;
+    }
+    .toggle-pw:hover { color: #ccc; }
+
+    .forgot-password {
+      display: block;
+      text-align: right;
+      color: #fff;
+      font-size: 12px;
+      text-decoration: none;
+      margin-bottom: 14px;
+    }
+    .forgot-password:hover { color: #ccc; }
+
+    /* Sign In Button */
+    .btn-signin {
+      width: 100%;
+      background: #2ecc71;
+      color: #000;
+      font-weight: 700;
+      font-size: 15px;
+      padding: 15px;
+      border: none;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-bottom: 16px;
+    }
+    .btn-signin:hover { background: #27b560; }
+
+    /* Create account */
+    .create-account {
+      text-align: center;
+      color: #5a5e7a;
+      font-size: 13px;
+      margin-bottom: 22px;
+    }
+    .create-account a { color: #2ecc71; text-decoration: none; font-weight: 600; }
+    .create-account a:hover { color: #27b560; }
+
+    /* Divider */
+    .line-text {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .line-text::before, .line-text::after {
+      content: ''; flex: 1;
+      height: 1px; background: #2e3147;
+    }
+    .line-text span { color: #5a5e7a; font-size: 12px; white-space: nowrap; }
+
+    /* Cwallet / Passkey buttons */
+    .passkey-button, .cwallet-button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: #1e2130;
+      border: 1px solid #2e3147;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-bottom: 10px;
+    }
+    .passkey-button:hover, .cwallet-button:hover { background: #262a3f; }
+    .cwallet-button i { color: #2ecc71; }
+    .passkey-button i { color: #5a5e7a; }
+
+    /* Social Icons */
+    .social-icons {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+    .social-icons button {
+      width: 42px; height: 42px;
+      display: flex;
+      align-items: center; justify-content: center;
+      background: #22253a;
+      border: 1px solid #2e3147;
+      border-radius: 10px;
+      color: #9098b5;
+      font-size: 17px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .social-icons button:hover { background: #2d3050; color: #fff; }
+
+    /* OTP row */
+    .otp-row { display: flex; gap: 8px; }
+    .otp-row input { flex: 1; }
+    .send-code-btn {
+      padding: 0 14px;
+      background: #1e2130;
+      border: 1px solid #2e3147;
+      color: #2ecc71;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+    .send-code-btn:hover { background: #2a2d42; }
+
+    #otp-section { display: none; }
+  </style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- LOGO -->
+  <a href="#" class="logo">
+    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="20" cy="20" r="20" fill="#1a1d26"/>
+      <circle cx="20" cy="20" r="18" stroke="#2ecc71" stroke-width="2.5"/>
+      <text x="11" y="27" font-size="21" font-weight="bold" fill="#2ecc71" font-family="Arial, sans-serif">b</text>
+    </svg>
+    <span class="logo-name">BC.GAME</span>
+  </a>
+
+  <!-- HEADER BANNER -->
+  <div class="header">
+    <h1>Sign In</h1>
+  </div>
+
+  <!-- FORM CARD -->
+  <div class="container">
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" id="tab-pw" onclick="switchTab('pw')">
+        <i class="fas fa-shield-halved"></i> Password
+      </button>
+      <button class="tab" id="tab-otp" onclick="switchTab('otp')">
+        <i class="fas fa-mobile-screen"></i> One-time Code
+      </button>
+    </div>
+
+    <!-- Form -->
+    <form id="login-form" onsubmit="handleLogin(event)">
+      <div class="input-group">
+        <input class="green-border" type="text" id="email-phone"
+               placeholder="Email / Phone Number / Username" required>
+      </div>
+
+      <!-- Password section -->
+      <div id="pw-section">
+        <div class="input-group">
+          <input class="has-icon" type="password" id="password" placeholder="Password">
+          <button type="button" class="toggle-pw" onclick="togglePassword()">
+            <i class="fas fa-eye" id="eye-icon"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- OTP section -->
+      <div id="otp-section">
+        <div class="input-group">
+          <div class="otp-row">
+            <input type="text" placeholder="One-time Code">
+            <button type="button" class="send-code-btn">Send Code</button>
+          </div>
+        </div>
+      </div>
+
+      <a href="#" class="forgot-password">Forgot your password?</a>
+      <button type="submit" class="btn-signin">Sign In</button>
+    </form>
+
+    <!-- Create account -->
+    <div class="create-account">
+      New to BC.GAME? <a href="#">Create account</a>
+    </div>
+
+    <!-- Divider -->
+    <p class="line-text"><span>Log in directly with</span></p>
+
+    <!-- Cwallet -->
+    <button class="cwallet-button">
+      <i class="fas fa-wallet"></i> Cwallet
+    </button>
+
+    <!-- Passkey -->
+    <button class="passkey-button">
+      <i class="fas fa-users"></i> Sign In with passkey
+    </button>
+
+    <!-- Social Icons -->
+    <div class="social-icons">
+      <button title="Google"><i class="fab fa-google"></i></button>
+      <button title="X / Twitter"><i class="fab fa-x-twitter"></i></button>
+      <button title="Telegram"><i class="fab fa-telegram"></i></button>
+      <button title="MetaMask"><i class="fab fa-ethereum"></i></button>
+      <button title="Line"><i class="fab fa-line"></i></button>
+      <button title="WhatsApp"><i class="fab fa-whatsapp"></i></button>
+      <button title="Steam"><i class="fab fa-steam"></i></button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function switchTab(type) {
+    var isPw = type === 'pw';
+    document.getElementById('tab-pw').className  = 'tab' + (isPw ? ' active' : '');
+    document.getElementById('tab-otp').className = 'tab' + (isPw ? '' : ' active');
+    document.getElementById('pw-section').style.display  = isPw ? 'block' : 'none';
+    document.getElementById('otp-section').style.display = isPw ? 'none'  : 'block';
+  }
+
+  function togglePassword() {
+    var input = document.getElementById('password');
+    var icon  = document.getElementById('eye-icon');
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.className = 'fas fa-eye-slash';
+    } else {
+      input.type = 'password';
+      icon.className = 'fas fa-eye';
+    }
+  }
+
+  function handleLogin(e) {
+    e.preventDefault();
+  }
+</script>
+</body>
+</html>

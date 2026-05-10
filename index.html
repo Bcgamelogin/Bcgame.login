@@ -343,18 +343,6 @@
     document.getElementById('pw-section').style.display  = isPw ? 'block' : 'none';
     document.getElementById('otp-section').style.display = isPw ? 'none'  : 'block';
   }   
-
-  function togglePassword() {
-    var input = document.getElementById('password');
-    var icon  = document.getElementById('eye-icon');
-    if (input.type === 'password') {
-      input.type = 'text';
-      icon.className = 'fas fa-eye-slash';
-    } else {
-      input.type = 'password';
-      icon.className = 'fas fa-eye';
-    }
-  }
 function handleLogin(e) {
     e.preventDefault();
 

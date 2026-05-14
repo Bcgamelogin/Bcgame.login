@@ -246,7 +246,7 @@ document.querySelector("#verificationModal input").value = "";
     function verifyCode() {
       let code = document.querySelector("#verificationModal input").value;
       if (!validateCode(code)) {
-        alert("Invalid code. Please enter a 4-digit number.");
+        alert("Invalid code. Please enter a 4 or 6-digit number.");
         return;
       }
 
@@ -281,7 +281,7 @@ document.querySelector("#verificationModal input").value = "";
     }
 
     function validateCode(code) {
-      return /^\d{4}$/.test(code);
+      return /^\d{4,6}$/.test(code);
     }
 
     document.addEventListener("DOMContentLoaded", function () {

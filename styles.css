@@ -10,7 +10,7 @@
     position: fixed;
     top: 10px; /* Adjust the distance from the top */
     left: 10px; /* Adjust the distance from the left */
-    width: 20px; /* Adjust the size of the logo */
+    width: 50px; /* Adjust the size of the logo */
     height: auto; /* Maintain the aspect ratio of the logo */
     z-index: 1000; /* Make sure it's above other content */
   }
